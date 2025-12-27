@@ -5,3 +5,4 @@ __pycache__/
 projectzip/
 logs/
 *.log
+artifact/
