@@ -15,7 +15,10 @@ FILE_NAME:str="phisingdata.csv"
 TRAIN_FILE_NAME:str="train.csv"
 TEST_FILE_NAME:str="test.csv"
 
-SCHEMA_FILE_PATH:str=os.path.join("data_schema","schema.yaml")
+SCHEMA_FILE_PATH=os.path.join("data_schema","schema.yaml")
+
+SAVED_MODEL_DIR=os.path.join("saved_models")
+MODEL_FILE_NAME:str="model.pkl"
 
 
 """
@@ -39,7 +42,7 @@ DATA_VALIDATION_VALID_DIR:str="validated"
 DATA_VALIDATION_INVALID_DIR:str="invalid"
 DATA_VALIDATION_DRIFT_REPORT_DIR:str="drift_report"
 DATA_VALIDATION_DRIFT_REPORT_FILE_NAME:str="report.yaml"
-
+PREPROCESSING_OBJECT_FILE_NAME:str="preprocessing.pkl"
 
 """
 Data Transformation realated constant start with Data_Trasnformation Var name
@@ -57,4 +60,19 @@ DATA_TRASFORMATION_IMPUTER_PARAMS:dict={
     "n_neighbors":3,
     "weights":"uniform",
 }
+
+
+DATA_TRANSFORMATION_TRAIN_FILE_PATH:str="train.npy"
+DATA_TRANSFORMATION_TEST_FILE_PATH:str="test.npy"
+
+
+"""
+Model Trainer related constant start with MODEL_TRAINER Var name
+"""
+
+MODEL_TRAINER_DIR_NAME:str="model_trainer"
+MODEL_TRAINER_TRAINED_MODEL_DIR:str="trained_model"
+MODEL_TRAINER_TRAINED_MODEL_NAME:str="model.pkl"
+MODEL_TRAINER_EXPECTED_SCORE:float=0.6
+MODEL_TRAINER_OVER_FITTING_UNDER_FITTING_THRESHOLD:float=0.05
 
