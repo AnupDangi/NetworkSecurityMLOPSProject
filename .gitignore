@@ -6,3 +6,5 @@ projectzip/
 logs/
 *.log
 artifact/
+
+mlruns/
