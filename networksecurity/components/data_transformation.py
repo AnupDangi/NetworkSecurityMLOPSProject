@@ -9,9 +9,8 @@ from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.constant.training_pipeline import DATA_TRASFORMATION_IMPUTER_PARAMS,TARGET_COLUMN
 from networksecurity.logging.logger import logging
 from networksecurity.entity.config_entity import DataTransformationConfig
-from networksecurity.utils.main_utils.utils import save_numpy_array
+from networksecurity.utils.main_utils.utils import save_numpy_array, save_numpy_array_data, save_object
 from networksecurity.entity.artifact_entity import DataValidationArtifact,DataTransformationArtifact
-from projectzip.networksecurity.utils.main_utils.utils import save_numpy_array_data,save_object
 import numpy as np
 
 class DataTransformation:
