@@ -1,128 +1,172 @@
-# NetworkSecurityMLOPSProject
+# Network Security MLOps Project
 
-This project is a comprehensive Machine Learning Operations (MLOps) solution designed for Network Security, specifically focusing on phishing data detection. It implements a full ML pipeline including data ingestion, validation, transformation, model training, and deployment using FastAPI and Docker.
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.95%2B-green)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## Project Structure
+A comprehensive Machine Learning Operations (MLOps) solution aimed at enhancing network security by detecting phishing attempts. This project orchestrates a robust end-to-end ML pipeline encompassing data ingestion, validation, transformation, model training, and scalable deployment using key modern technologies.
 
-The project is organized into several key modules:
+## 🏗️ Architecture
+
+The system follows a modular architecture designed for scalability and maintainability.
+
+```mermaid
+graph TD
+    subgraph Data_Source
+        A[MongoDB] -->|Fetch Data| B(Data Ingestion)
+    end
+
+    subgraph ML_Pipeline
+        B -->|Raw Data| C{Data Validation}
+        C -->|Valid Data| D(Data Transformation)
+        C -->|Invalid Data| E[Reject/Log]
+        D -->|Transformed Data| F(Model Trainer)
+        F -->|Trained Model| G[Model Evaluation]
+    end
+
+    subgraph Artifacts_Store
+        B -.->|Ingestion Artifacts| H[(Artifacts/S3)]
+        C -.->|Validation Artifacts| H
+        D -.->|Preprocessor| H
+        F -.->|Model Object| H
+    end
+
+    subgraph Deployment
+        G -->|Approved Model| I[Final Model]
+        I -->|Load| J[FastAPI Application]
+        K[User/Client] -->|API Request| J
+        J -->|Prediction| K
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style J fill:#bbf,stroke:#333,stroke-width:2px
+```
+
+## 🚀 Key Features
+
+- **Data Ingestion**: Seamless extraction of network data from MongoDB sources.
+- **Data Validation**: Rigorous schema checks and data drift detection to ensure data quality.
+- **Data Transformation**: Automated preprocessing pipelines to convert raw data into model-ready formats.
+- **Model Training**: Modular training component supporting various algorithms with experiment tracking.
+- **MLOps Integration**: Integrated with **MLflow** and **DagsHub** for experiment tracking and model registry.
+- **Deployment**: RESTful API service provided by **FastAPI**, containerized with **Docker** for consistent deployment environments.
+- **Cloud Ready**: Configured for syncing artifacts with AWS S3.
+
+## 📂 Project Structure
 
 ```
 NetworkSecurityMLOPSProject/
-├── networksecurity/         # Main package
-│   ├── components/          # ML Pipeline components (Ingestion, Validation, Transformation, Model Trainer)
-│   ├── pipeline/            # Pipeline orchestration (Training Pipeline)
-│   ├── entity/              # Config and Artifact definitions
-│   ├── constant/            # Constants used across the project
+├── networksecurity/         # Core package containing the ML logic
+│   ├── components/          # Pipeline steps: Ingestion, Validation, Transformation, Trainer
+│   ├── pipeline/            # Orchestration logic (Training & Prediction pipelines)
+│   ├── entity/              # Data classes for Config and Artifacts
+│   ├── constant/            # Centralized constants and configuration paths
 │   ├── utils/               # Utility functions
-│   └── exception/           # Custom exception handling
+│   └── exception/           # Custom exception handling framework
+├── data_schema/             # Schema definitions for data validation
 ├── app.py                   # FastAPI application entry point
-├── main.py                  # Script to run the training pipeline manually
-├── push_data.py             # Script to seed data into MongoDB
-├── Dockerfile               # Docker configuration for containerization
-├── requirements.txt         # Project dependencies
-└── ...
+├── main.py                  # Entry point for manual pipeline execution
+├── push_data.py             # Utility to seed data into MongoDB
+├── Dockerfile               # Docker container definition
+├── requirements.txt         # Python dependencies
+└── setup.py                 # Package setup configuration
 ```
 
-## Prerequisites
+## 🛠️ Prerequisites
 
-- Python 3.10+
-- MongoDB (Atlas or Local)
-- AWS Account (optional, for deployment)
-- DagsHub/MLflow Account (optional, for experiment tracking)
+Before you begin, ensure you have the following installed:
 
-## Installation
+- **Python 3.10+**
+- **MongoDB** (Atlas or Local instance)
+- **Docker** (Optional, for containerization)
+- **AWS Account** (Optional, for S3 artifact storage)
 
-1. Clone the repository:
+## ⚙️ Installation
+
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/AnupDangi/NetworkSecurityMLOPSProject.git
    cd NetworkSecurityMLOPSProject
    ```
 
-2. Create and activate a virtual environment (recommended):
+2. **Set up a Virtual Environment:**
 
    ```bash
    conda create -n networksecurity python=3.10 -y
    conda activate networksecurity
    ```
 
-3. Install dependencies:
+3. **Install Dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-## Configuration
+## 🔐 Configuration
 
-Create a `.env` file in the root directory and add your MongoDB connection string:
+Create a `.env` file in the root directory with the following configuration:
 
 ```env
-MONGODB_URL="mongodb+srv://<username>:<password>@cluster0.mongodb.net/?retryWrites=true&w=majority"
+MONGODB_URL="mongodb+srv://<username>:<password>@cluster.mongodb.net/..."
+AWS_ACCESS_KEY_ID="<your_access_key>"
+AWS_SECRET_ACCESS_KEY="<your_secret_key>"
+AWS_REGION="<your_region>"
 ```
 
-## Data Setup
+## 📊 Data Setup
 
-To initialize the database with network security data, use the `push_data.py` script. This script reads source data (e.g., CSV) and pushes it to your configured MongoDB instance.
+To populate your MongoDB database with the initial dataset:
 
 ```bash
 python push_data.py
 ```
 
-_Note: Ensure you have the source data file available as expected by the script._
+_Make sure your source data (CSV) path is correctly configured in the script._
 
-## Usage
+## 🏃 Usage
 
-### Running the Web API (FastAPI)
+### 1. Training Pipeline
 
-The application exposes a REST API for interaction.
-
-1. Start the server:
-
-   ```bash
-   python app.py
-   ```
-
-   The application will run on `http://localhost:8080`.
-
-2. Access the API documentation (Swagger UI):
-   Open your browser and navigate to `http://localhost:8080/docs`.
-
-3. **Train Model via API:**
-   You can trigger the training pipeline by sending a GET request to the `/train` endpoint.
-
-### Running the Training Pipeline Manually
-
-You can also run the complete training pipeline directly from the command line:
+To execute the training pipeline manually:
 
 ```bash
 python main.py
 ```
 
-This will execute the following steps in order:
+This will run Ingestion → Validation → Transformation → Training sequentially.
 
-1. **Data Ingestion:** Fetch data from MongoDB.
-2. **Data Validation:** Validate data schema and statistics.
-3. **Data Transformation:** Preprocess data for training.
-4. **Model Training:** Train the model and save the artifact.
+### 2. Start the API Server
 
-## Docker Support
+Launch the FastAPI application:
 
-To build and run the application using Docker:
+```bash
+python app.py
+```
 
-1. **Build the image:**
+or
 
-   ```bash
-   docker build -t networksecurity .
-   ```
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8080
+```
 
-2. **Run the container:**
-   ```bash
-   docker run -p 8080:8080 -e MONGODB_URL="your_mongodb_url" networksecurity
-   ```
+- **API UI**: [http://localhost:8080/docs](http://localhost:8080/docs)
+- **Train Endpoint**: `/train` (Triggers the pipeline)
+- **Predict Endpoint**: `/predict` (For inference)
 
-## MLOps Integration
+### 3. Docker execution
 
-The project is set up to work with MLflow and DagsHub for experiment tracking. Ensure your environment variables for MLflow are set if you wish to track experiments.
+Build and run the container:
 
-## License
+```bash
+docker build -t networksecurity .
+docker run -p 8080:8080 -e MONGODB_URL="your_url" networksecurity
+```
 
-[MIT](LICENSE)
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
